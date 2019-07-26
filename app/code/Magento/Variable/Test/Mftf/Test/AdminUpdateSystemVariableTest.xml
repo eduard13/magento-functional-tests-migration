@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ /**
+  * Copyright © Magento, Inc. All rights reserved.
+  * See COPYING.txt for license details.
+  */
+-->
+
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="urn:magento:mftf:Test/etc/testSchema.xsd">
+    <test name="AdminUpdateSystemVariableTest">
+        <annotations>
+            <features value="Variable"/>
+            <stories value="Menu Navigation"/>
+            <title value="Admin updates and deletes a system variable"/>
+            <description value="Admin should be able to update and delete the system custom variable"/>
+            <severity value="CRITICAL"/>
+            <testCaseId value="MC-14126"/>
+            <group value="menu"/>
+            <group value="mtf_migrated"/>
+        </annotations>
+        <before>
+            <createData entity="systemVariable" stepKey="createdSystemVariable"/>
+            <actionGroup ref="LoginAsAdmin" stepKey="LoginAsAdmin"/>
+        </before>
+        <after>
+            <actionGroup ref="logout" stepKey="logout"/>
+        </after>
+        <actionGroup ref="AdminNavigateToVariablesGridPageActionGroup" stepKey="navigateToVariablesGrid"/>
+        <actionGroup ref="AdminNavigateToVariablePageActionGroup" stepKey="navigateToVariablePage">
+            <argument name="code" value="{{systemVariable.code}}"/>
+        </actionGroup>
+        <actionGroup ref="AdminFillCustomVariableInputActionGroup" stepKey="updateVariableCode">
+            <argument name="field" value="{{CustomVariableSection.variableName}}"/>
+            <argument name="value" value="New Variable Name"/>
+        </actionGroup>
+        <actionGroup ref="AdminClickMainButtonActionGroup" stepKey="clickSaveCustomVariable">
+            <argument name="button" value="{{AdminMainActionsSection.save}}"/>
+        </actionGroup>
+        <actionGroup ref="AssertMessageInAdminPanelActionGroup" stepKey="seeSuccessMessage">
+            <argument name="message" value="You saved the custom variable."/>
+        </actionGroup>
+        <actionGroup ref="AdminFilterGridActionGroup" stepKey="filterVariablesGridByNewVariableCode" >
+            <argument name="field" value="{{AdminVariablesFilterSection.codeFilter}}"/>
+            <argument name="value" value="{{systemVariable.code}}"/>
+        </actionGroup>
+        <actionGroup ref="AssertValueInAdminGridActionGroup" stepKey="seeNewVariableNameInGrid">
+            <argument name="value" value="New Variable Name"/>
+        </actionGroup>
+        <actionGroup ref="AdminNavigateToVariablePageActionGroup" stepKey="navigateToVariablePageToDeleteIt">
+            <argument name="code" value="{{systemVariable.code}}"/>
+        </actionGroup>
+        <actionGroup ref="AdminClickDeleteMainButtonWithConfirmationActionGroup" stepKey="deleteCustomVariable"/>
+        <actionGroup ref="AssertMessageInAdminPanelActionGroup" stepKey="seeSuccessMessageAfterDeleting">
+            <argument name="message" value="You deleted the custom variable."/>
+        </actionGroup>
+    </test>
+</tests>
